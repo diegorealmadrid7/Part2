@@ -1,13 +1,15 @@
 import React from 'react'
-import Person from './Person'
 
-const Persons = (props) => {
+const Persons = ({ persons, handleDeletePerson }) => {
     return (
-        <ul>
-            {props.persons.filter(person => person.name.toUpperCase().includes(props.newSearch.toUpperCase())).map(person => (
-            <Person key={person.id} name={person.name} number={person.number} /> ))}
-        </ul> 
-    ) 
+        persons.map(person => 
+            <tr key={person.id}>
+                <td>{person.name}</td>
+                <td>{person.number}</td>
+                <td><button onClick={() => handleDeletePerson(person.id)}>delete</button></td>
+            </tr>
+        )
+    )
 }
 
 export default Persons
