@@ -4,6 +4,7 @@ import FilterPerson from './components/FilterPerson'
 import Persons from './components/Persons'
 import personsServices from './services/Persons'
 import Notification from './components/Notification'
+import './index.css'
 
 const App = () => {
   const [ persons, setPersons ] = useState([])
@@ -33,7 +34,6 @@ const App = () => {
 
   const handleDeletePerson = (id) => {
     const toDelete = persons.find(p => p.id === id)
-    //const ok = window.confirm(`Delete ${toDelete.name}?`)
     if(window.confirm(`Delete ${toDelete.name}?`)) {
         personsServices
           .deletePerson(id)
@@ -70,10 +70,19 @@ const App = () => {
     const previusPerson = persons.find(n => n.name === newName)
 
     if (previusPerson) {
-      window.alert(`${newName} is already added to phonebook`)
-      setNewName('')
-      setNewNumber('')
+      const ok = window.confirm(`${previusPerson.name} is already added to phonebook, replace the old number with a new one?`)
+      if (ok) {
+      console.log('updateo')
+        previusPerson.number = newNumber
+        personsServices
+          .update(previusPerson.id,previusPerson)
+          .then(returnedPersons => {
+            setNewName('')
+            setNewNumber('')
+          })
+      }
     } else {
+      console.log('creo')
       personsServices
         .create(personObject)
         .then(returnedPersons => {
@@ -91,7 +100,7 @@ const App = () => {
   
   return (
     <div>
-      <h2>Phonebook</h2>
+      <h1>Phonebook</h1>
 
       <Notification notification={notification}/>
 
