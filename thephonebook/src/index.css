@@ -1,0 +1,13 @@
+.succes {
+    color: green;
+    padding: 3px;
+    border-radius: 10px;
+    background-color: black;
+}
+
+.deleted {
+    color: red;
+    padding: 3px;
+    border-radius: 10px;
+    background-color: black;
+}

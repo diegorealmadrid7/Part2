@@ -4,6 +4,7 @@ import FilterPerson from './components/FilterPerson'
 import Persons from './components/Persons'
 import personsServices from './services/Persons'
 import Notification from './components/Notification'
+import './index.css'
 
 const App = () => {
   const [ persons, setPersons ] = useState([])
@@ -24,7 +25,7 @@ const App = () => {
     setNewSearch(event.target.value)
   }
 
-  const notifyWith = (message, type='success') => {
+  const notifyWith = (message, type) => {
     setNotification({message, type})
     setTimeout(() => {
         setNotification(null)
@@ -38,14 +39,14 @@ const App = () => {
           .deletePerson(id)
           .then(response => {
             setPersons(persons.filter(n => n.id !== id))
-            notifyWith(`Deleted ${toDelete.name}`)
+            notifyWith(`Deleted ${toDelete.name}`, 'deleted')
             setNewNumber("")
             setNewName("")
             setNewSearch("")
           })
           .catch(() => {
             setPersons(persons.filter(n => n.id !== id))
-            notifyWith(`User ${toDelete.name} has already been deleted from the server`)
+            notifyWith(`User ${toDelete.name} has already been deleted from the server`, 'deleted')
           })
       }
   }
@@ -67,17 +68,22 @@ const App = () => {
     }
 
     const previusPerson = persons.find(n => n.name === newName)
-
+    //
     if (previusPerson) {
       const ok = window.confirm(`${previusPerson.name} is already added to phonebook, replace the old number with a new one?`)
       if (ok) {
-      console.log('updateo')
+      console.log('updateo')       
         previusPerson.number = newNumber
         personsServices
           .update(previusPerson.id,previusPerson)
           .then(returnedPersons => {
+            notifyWith(`Number updated for ${previusPerson.name}`, 'succes')
             setNewName('')
             setNewNumber('')
+          })
+          .catch(() => {
+            setPersons(persons.filter(n => n.name !== newName))
+            notifyWith(`User ${previusPerson.name} has already been deleted from the server`, 'deleted')
           })
       }
     } else {
@@ -86,8 +92,13 @@ const App = () => {
         .create(personObject)
         .then(returnedPersons => {
           setPersons(persons.concat(returnedPersons))
+          notifyWith(`${returnedPersons.name} added`, 'succes')
           setNewName('')
           setNewNumber('')
+        })
+        .catch(() => {
+          setPersons(persons.filter(n => n.name !== newName))
+          notifyWith(`User ${persons.name} could not been added`, 'deleted')
         })
     }
   }
