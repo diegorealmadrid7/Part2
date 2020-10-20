@@ -4,7 +4,6 @@ import FilterPerson from './components/FilterPerson'
 import Persons from './components/Persons'
 import personsServices from './services/Persons'
 import Notification from './components/Notification'
-import './index.css'
 
 const App = () => {
   const [ persons, setPersons ] = useState([])
